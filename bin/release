@@ -7,6 +7,7 @@ BUILD_DIR="$1"
 
 #here, we need to override the ANT_HOME variable
 ANT_HOME="/app/.buildpack/apache-ant-${ANT_VER}"
+JAVA_HOME=$(/opt/IBM/java/bin/java)
 
 cat <<EOF
 ---
@@ -16,5 +17,5 @@ config_vars:
     JAVA_OPTS: "-Xmx384m -Xss512k -XX:+UseCompressedOops"
     ANT_OPTS: "-Xmx384m -Xss512k -XX:+UseCompressedOops"
 default_process_types:
-    web: sh bin/heroku_start.sh
+    web: sh bin/start.sh
 EOF
