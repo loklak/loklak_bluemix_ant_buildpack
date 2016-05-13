@@ -11,6 +11,8 @@ CACHE_DIR=$2
 JAVA_DIST="openjdk1.7.0_21"
 JDK7_URL="https://s3.amazonaws.com/heroku-jdk/${JAVA_DIST}.tar.gz"
 
+echo $PORT
+echo $VCP_APP_PORT
 #create the cache dir if it doesn't exist
 mkdir -p $CACHE_DIR
 
