@@ -16,6 +16,15 @@ function indent() {
   esac
 }
 
+
+function package_download() {
+  url="$1"
+  location="$2"
+
+  mkdir -p $location
+  curl $url --location -s -o - | tar xzf - -C $location
+}
+
 VENDOR_DIR="$BUILD_DIR/vendor"
 REPOSITORY_ROOT="download.pivotal.io.s3.amazonaws.com"
 JDK_VERSION="1.7.0_51"
