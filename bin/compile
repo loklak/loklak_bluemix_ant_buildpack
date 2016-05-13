@@ -8,6 +8,13 @@ set -e
 BUILD_DIR=$1
 CACHE_DIR=$2
 
+function indent() {
+  c='s/^/       /'
+  case $(uname) in
+    Darwin) sed -l "$c";;
+    *)      sed -u "$c";;
+  esac
+}
 
 VENDOR_DIR="$BUILD_DIR/vendor"
 REPOSITORY_ROOT="download.pivotal.io.s3.amazonaws.com"
