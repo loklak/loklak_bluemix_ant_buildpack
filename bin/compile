@@ -8,31 +8,21 @@ set -e
 BUILD_DIR=$1
 CACHE_DIR=$2
 
+ls -l `which java`
+ls -l /etc/alternatives/java
 
+echo "java: ${JAVA_HOME}"
+echo "path: ${PATH}"
 
 if test -z "${JAVA_HOME}" ; then
   # JAVA_HOME is not set, try to set it if java is in PATH
   echo "ERROR: JAVA_HOME not found in your environment."
   echo "Please, set the JAVA_HOME variable in your environment to match the"
   echo "location of the Java Virtual Machine you want to use."
-  # exit
+  exit
 fi
 
-PATH="${JAVA_HOME}/bin:$PATH"
 
-# Try to find Java Home directory, from JAVA_HOME environment
-# or java executable found in PATH
-
-JAVABIN="${JAVA_HOME}/bin/java"
-set -o xtrace
-
-JAVA_HOME=/opt/IBM/java/bin/java
-export JAVE_HOME
-PATH=$JAVA_HOME/bin:$PATH
-export PATH
-
-echo "java: ${JAVA_HOME}"
-echo "path: ${PATH}"
 # <BUILD_DIR> is (during this stage) a temporary directory. 
 # During execution of your slug it'll be known as '/app'.
 
