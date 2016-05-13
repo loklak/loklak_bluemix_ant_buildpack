@@ -8,51 +8,40 @@ set -e
 BUILD_DIR=$1
 CACHE_DIR=$2
 
-function indent() {
-  c='s/^/       /'
-  case $(uname) in
-    Darwin) sed -l "$c";;
-    *)      sed -u "$c";;
-  esac
-}
+JAVA_DIST="openjdk1.7.0_21"
+JDK7_URL="https://s3.amazonaws.com/heroku-jdk/${JAVA_DIST}.tar.gz"
 
+#create the cache dir if it doesn't exist
+mkdir -p $CACHE_DIR
 
-function package_download() {
-  url="$1"
-  location="$2"
+cd "$BUILD_DIR"
 
-  mkdir -p $location
-  curl $url --location -s -o - | tar xzf - -C $location
-}
+#jdk7
+if [ -d .jdk7 ]; then
+  echo "-----> .jdk7 folder found, moving along."
 
-VENDOR_DIR="$BUILD_DIR/vendor"
-REPOSITORY_ROOT="download.pivotal.io.s3.amazonaws.com"
-JDK_VERSION="1.7.0_51"
-#JDK="openjdk-${JDK_VERSION}"
-JDK="jdk${JDK_VERSION}"
-PLATFORM="lucid"
-ARCH="x86_64"
-#JDK_URL="http://${REPOSITORY_ROOT}/openjdk/${PLATFORM}/${ARCH}/${JDK}.tar.gz"
-JDK_URL="https://s3-us-west-2.amazonaws.com/java-r-buildpack/jdk-7u51-linux-i586.tar.gz"
-echo "JDK_URL: $JDK_URL" | indent
-JAVA_HOME_TEMP="$VENDOR_DIR/$JDK"
-#: ${JAVA_HOME=}
-#: ${JAVA_CPPFLAGS=~autodetect~}
-#: ${JAVA_LD_LIBRARY_PATH=~autodetect~}
-#: ${JAVA_LIBS=~autodetect~}
+else
+  echo -n "-----> .jdk7 folder not found! "
+  if [[ -d "$CACHE_DIR/.jdk7" ]]; then
+    echo -n "Copying jdk from cache to app... "
+    cp -r "$CACHE_DIR/.jdk7" "$BUILD_DIR"
+    echo "Done!"
 
-echo "Downloading and unpacking $JDK into '$VENDOR_DIR'" | indent
-#package_download "${JDK_URL}" "${VENDOR_DIR}"
-wget "${JDK_URL}" --no-check-certificate
-mkdir -p $JAVA_HOME_TEMP
-mv jdk-7u51-linux-x64.tar.gz "${JAVA_HOME_TEMP}"
-tar xzf "${JAVA_HOME_TEMP}/jdk-7u51-linux-x64.tar.gz"
-rm "${JAVA_HOME_TEMP}/jdk-7u51-linux-x64.tar.gz"
+  else
+    echo -n "-----> Installing ${JAVA_DIST} build (to .jdk7)....."
+    mkdir "$BUILD_DIR/.jdk7"
+    cd "$BUILD_DIR/.jdk7"
+    curl --max-time 180 --location "$JDK7_URL" | tar xz
+    cd "$BUILD_DIR"
+    echo "Done!"
+  fi
+fi
 
-echo "JAVA_HOME_TEMP: $JAVA_HOME_TEMP" | indent
-#export JAVA_HOME="/app/vendor/${JDK}"
-export JAVA_HOME=$JAVA_HOME_TEMP
-echo "JAVA_HOME: $JAVA_HOME" | indent
+cd $BUILD_DIR
+
+export JAVA_HOME="$BUILD_DIR/.jdk7"
+export PATH="$JAVA_HOME/bin:$PATH"
+
 
 if test -z "${JAVA_HOME}" ; then
   # JAVA_HOME is not set, try to set it if java is in PATH
