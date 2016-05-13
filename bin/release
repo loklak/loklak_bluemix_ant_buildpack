@@ -42,5 +42,5 @@ config_vars:
     JAVA_OPTS: "-Xmx384m -Xss512k -XX:+UseCompressedOops"
     ANT_OPTS: "-Xmx384m -Xss512k -XX:+UseCompressedOops"
 default_process_types:
-    web: sh bin/heroku_start.sh
+    web: JAVA_HOME=$PWD/.java-buildpack/open_jdk_jre JAVA_OPTS="-Djava.io.tmpdir=$TMPDIR sh bin/heroku_start.sh
 EOF
