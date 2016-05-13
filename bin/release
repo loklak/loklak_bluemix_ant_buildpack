@@ -5,32 +5,6 @@ BUILD_DIR="$1"
 
 . $(dirname $0)/common
 
-
-if test -z "${JAVA_HOME}" ; then
-  # JAVA_HOME is not set, try to set it if java is in PATH
-  echo "ERROR: JAVA_HOME not found in your environment."
-  echo "Please, set the JAVA_HOME variable in your environment to match the"
-  echo "location of the Java Virtual Machine you want to use."
-  exit
-fi
-
-PATH="${JAVA_HOME}/bin:$PATH"
-
-# Try to find Java Home directory, from JAVA_HOME environment
-# or java executable found in PATH
-
-JAVABIN="${JAVA_HOME}/bin/java"
-set -o xtrace
-
-JAVA_HOME=/opt/IBM/java/bin/java
-export JAVE_HOME
-PATH=$JAVA_HOME/bin:$PATH
-export PATH
-
-echo "java: ${JAVA_HOME}"
-echo "path: ${PATH}"
-
-
 #here, we need to override the ANT_HOME variable
 ANT_HOME="/app/.buildpack/apache-ant-${ANT_VER}"
 
