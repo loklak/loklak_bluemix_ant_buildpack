@@ -8,30 +8,30 @@ set -e
 BUILD_DIR=$1
 CACHE_DIR=$2
 
-JAVA_DIST="openjdk1.7.0_21"
-JDK7_URL="https://s3.amazonaws.com/heroku-jdk/${JAVA_DIST}.tar.gz"
+JAVA_DIST="openjdk-1.8.0_51"
+JDK8_URL="https://download.run.pivotal.io/openjdk/lucid/x86_64/${JAVA_DIST}.tar.gz"
 
 #create the cache dir if it doesn't exist
 mkdir -p $CACHE_DIR
 
 cd "$BUILD_DIR"
 
-#jdk7
-if [ -d .jdk7 ]; then
-  echo "-----> .jdk7 folder found, moving along."
+#jdk8
+if [ -d .jdk8 ]; then
+  echo "-----> .jdk8 folder found, moving along."
 
 else
-  echo -n "-----> .jdk7 folder not found! "
-  if [[ -d "$CACHE_DIR/.jdk7" ]]; then
+  echo -n "-----> .jdk8 folder not found! "
+  if [[ -d "$CACHE_DIR/.jdk8" ]]; then
     echo -n "Copying jdk from cache to app... "
-    cp -r "$CACHE_DIR/.jdk7" "$BUILD_DIR"
+    cp -r "$CACHE_DIR/.jdk8" "$BUILD_DIR"
     echo "Done!"
 
   else
-    echo -n "-----> Installing ${JAVA_DIST} build (to .jdk7)....."
-    mkdir "$BUILD_DIR/.jdk7"
-    cd "$BUILD_DIR/.jdk7"
-    curl --max-time 180 --location "$JDK7_URL" | tar xz
+    echo -n "-----> Installing ${JAVA_DIST} build (to .jdk8)....."
+    mkdir "$BUILD_DIR/.jdk8"
+    cd "$BUILD_DIR/.jdk8"
+    curl --max-time 180 --location "$JDK8_URL" | tar xz
     cd "$BUILD_DIR"
     echo "Done!"
   fi
@@ -39,7 +39,7 @@ fi
 
 cd $BUILD_DIR
 
-export JAVA_HOME="$BUILD_DIR/.jdk7"
+export JAVA_HOME="$BUILD_DIR/.jdk8"
 export PATH="$JAVA_HOME/bin:$PATH"
 
 
